@@ -64,7 +64,7 @@ class PortfolioApp {
                     imageUrl: "https://res.cloudinary.com/hz3gmuqw6/image/upload/c_fill,q_60,w_750/v1/classpop/blog/banks-of-the-seine-vetheuil-by-claude-monet_6687e3cb48e2b.jpg",
                     githubUrl: "https://github.com/Tushar9422/Image-Style-Transfer-CycleGAN-",
                     liveUrl: "https://github.com/Tushar9422/Image-Style-Transfer-CycleGAN-",
-                    createdAt: "2024-01-15"
+                    createdAt: "2025-01-15"
                 },
                 {
                     id: 2,
@@ -74,7 +74,7 @@ class PortfolioApp {
                     imageUrl: "https://media.istockphoto.com/photos/blog-illustration-picture-id480048030?k=6&m=480048030&s=170667a&w=0&h=P-i3fiDpmDBpxWUVDnF0f04VW9bq-yfoBKz--GC8mGU=",
                     githubUrl: "https://github.com/Tushar9422/BlogVerse",
                     liveUrl: "https://github.com/Tushar9422/BlogVerse",
-                    createdAt: "2024-02-20"
+                    createdAt: "2024-08-20"
                 },
                 {
                     id: 3,
@@ -84,7 +84,7 @@ class PortfolioApp {
                     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/27/MnistExamples.png",
                     githubUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
                     liveUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
-                    createdAt: "2024-03-10"
+                    createdAt: "2025-07-29"
                 }
             ];
             this.saveProjects();
@@ -102,7 +102,7 @@ class PortfolioApp {
                 email: "tusharsharma9422@gmail.com",
                 github: "https://github.com/Tushar9422",
                 linkedin: "https://linkedin.com/in/tushar-squared",
-                photo: "https://via.placeholder.com/300x300/4F46E5/FFFFFF?text=Your+Photo"
+                photo: "images/profile.jpg" // Default profile image
             };
             localStorage.setItem('portfolio_profile', JSON.stringify(this.userProfile));
         }
@@ -404,8 +404,8 @@ class PortfolioApp {
         this.typingAnimation = new Typed('#userTitle', {
             strings: [
                 'Data Science And Machine Learning Enthusiast',
-                'Python Developer',
-                'AI/ML Engineer'
+                'Coder',
+                'Student'
             ],
             typeSpeed: 50,
             backSpeed: 30,
