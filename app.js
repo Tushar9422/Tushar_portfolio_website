@@ -37,6 +37,54 @@ class PortfolioApp {
         this.typingAnimation = null;
         
         this.init();
+        // Show initial instruction
+        setTimeout(() => {
+            this.showResetInstruction();
+        }, 1000);
+    }
+
+    showResetInstruction() {
+        const notification = document.createElement('div');
+        notification.className = 'notification notification--info';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span>👋 Welcome! Please click the "Reset Portfolio" button at the top to start fresh.</span>
+                <button class="notification-close">&times;</button>
+            </div>
+        `;
+
+        // Update notification position to avoid overlap with reset button
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '80px',  // Increased to avoid overlap with reset button
+            right: '20px',
+            background: 'var(--color-info)',
+            color: 'white',
+            padding: '16px 20px',
+            borderRadius: '8px',
+            boxShadow: 'var(--shadow-lg)',
+            zIndex: '3000',
+            opacity: '0',
+            transform: 'translateX(100%)',
+            transition: 'all 0.3s ease-out',
+            minWidth: '300px'
+        });
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.addEventListener('click', () => {
+            this.hideNotification(notification);
+        });
+
+        setTimeout(() => {
+            this.hideNotification(notification);
+        }, 8000);
     }
 
     init() {
@@ -45,6 +93,176 @@ class PortfolioApp {
         this.renderInitialContent();
         this.checkAuthStatus();
         this.setupScrollAnimations();
+        this.setupResetButton();
+    }
+
+    setupResetButton() {
+        const resetBtn = document.createElement('button');
+        resetBtn.id = 'globalResetBtn';
+        resetBtn.className = 'btn btn-reset';
+        resetBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Reset Portfolio';
+        
+        Object.assign(resetBtn.style, {
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: '1000',
+            background: 'var(--color-accent)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '20px',
+            padding: '8px 20px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontWeight: 'bold',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+            transition: 'all 0.3s ease',
+            animation: 'pulseButton 2s infinite'
+        });
+
+        // Add hover effect
+        resetBtn.addEventListener('mouseenter', () => {
+            resetBtn.style.transform = 'translateX(-50%) scale(1.05)';
+            resetBtn.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+        });
+
+        resetBtn.addEventListener('mouseleave', () => {
+            resetBtn.style.transform = 'translateX(-50%) scale(1)';
+            resetBtn.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        });
+
+        // Add pulsing animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulseButton {
+                0% { transform: translateX(-50%) scale(1); }
+                50% { transform: translateX(-50%) scale(1.05); }
+                100% { transform: translateX(-50%) scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(resetBtn);
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Reset portfolio to default state? This will refresh the page.')) {
+                StorageManager.resetStorage();
+            }
+        });
+    }
+
+    // Navigation
+    handleNavClick(e) {
+        e.preventDefault();
+        const targetId = e.target.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+
+    // Authentication
+    checkAuthStatus() {
+        const session = localStorage.getItem('admin_session');
+        if (session) {
+            const sessionData = JSON.parse(session);
+            const now = new Date().getTime();
+            if (sessionData.authenticated && (now - sessionData.timestamp) < 86400000) { // 24 hours
+                this.isLoggedIn = true;
+                this.showAdminFeatures();
+            } else {
+                localStorage.removeItem('admin_session');
+            }
+        }
+    }
+
+    showLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.add('show');
+        document.querySelector('#loginModal .form-control').focus();
+    }
+
+    hideLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.remove('show');
+        document.getElementById('loginForm').reset();
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.classList.add('hidden');
+        errorDiv.textContent = '';
+    }
+
+    async handleLogin(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('loginError');
+
+        try {
+            const res = await fetch('/.netlify/functions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                this.isLoggedIn = true;
+                const sessionData = {
+                    authenticated: true,
+                    timestamp: new Date().getTime()
+                };
+                localStorage.setItem('admin_session', JSON.stringify(sessionData));
+                this.hideLoginModal();
+                this.showAdminFeatures();
+                this.showNotification('Login successful!', 'success');
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            errorDiv.textContent = 'An error occurred. Please try again.';
+            errorDiv.classList.remove('hidden');
+            console.error('Login error:', error);
+        }
+    }
+
+    handleLogout() {
+        this.isLoggedIn = false;
+        localStorage.removeItem('admin_session');
+        this.hideAdminFeatures();
+        this.showNotification('Logged out successfully!', 'info');
+    }
+
+    showAdminFeatures() {
+        document.getElementById('adminLoginBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'inline-flex';
+        document.getElementById('addProjectBtn').style.display = 'inline-flex';
+        document.getElementById('uploadPhotoBtn').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'block';
+        
+        document.querySelectorAll('.project-actions').forEach(actions => {
+            actions.style.display = 'flex';
+        });
+        
+        this.updateProjectCount();
+    }
+
+    hideAdminFeatures() {
+        document.getElementById('adminLoginBtn').style.display = 'inline-flex';
+        document.getElementById('logoutBtn').style.display = 'none';
+        document.getElementById('addProjectBtn').style.display = 'none';
+        document.getElementById('uploadPhotoBtn').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'none';
+        
+        document.querySelectorAll('.project-actions').forEach(actions => {
+            actions.style.display = 'none';
+        });
     }
 
     // Data Management
@@ -253,7 +471,6 @@ class PortfolioApp {
         document.getElementById('uploadPhotoBtn').style.display = 'block';
         document.getElementById('adminPanel').style.display = 'block';
         
-        // Show edit/delete buttons on projects
         document.querySelectorAll('.project-actions').forEach(actions => {
             actions.style.display = 'flex';
         });
@@ -268,7 +485,456 @@ class PortfolioApp {
         document.getElementById('uploadPhotoBtn').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'none';
         
-        // Hide edit/delete buttons on projects
+        document.querySelectorAll('.project-actions').forEach(actions => {
+            actions.style.display = 'none';
+        });
+    }
+
+    // Data Management
+    loadData() {
+        // Load projects from localStorage or use sample data
+        const storedProjects = localStorage.getItem('portfolio_projects');
+        if (storedProjects) {
+            this.projects = JSON.parse(storedProjects);
+        } else {
+            // Use sample data and save to localStorage
+            this.projects = [
+                {
+                    id: 1,
+                    title: "Image style transfer (using CycleGAN)",
+                    description: "Developed a real-time artistic image style transfer application using CycleGAN, trained on Monet and photo datasets. Implemented custom loss functions and optimized TensorFlow data pipelines for efficient preprocessing and batching. Deployed the model with a user-friendly Streamlit interface, enabling live transformation of images into Monet-style paintings. Skills utilized include machine learning, deep learning, neural networks, and data processing",
+                    technologies: ["Python", "TensorFlow", "Numpy", "Keras", "Streamlit"],
+                    imageUrl: "https://res.cloudinary.com/hz3gmuqw6/image/upload/c_fill,q_60,w_750/v1/classpop/blog/banks-of-the-seine-vetheuil-by-claude-monet_6687e3cb48e2b.jpg",
+                    githubUrl: "https://github.com/Tushar9422/Image-Style-Transfer-CycleGAN-",
+                    liveUrl: "https://github.com/Tushar9422/Image-Style-Transfer-CycleGAN-",
+                    createdAt: "2025-01-15"
+                },
+                {
+                    id: 2,
+                    title: "Blog Verse – secure blog platform",
+                    description: "BlogVerse is an all-in-one blogging platform built with Flask, designed to streamline content creation, user engagement, and content management. It combines modern web development with AI-powered features to enhance the blogging experience.",
+                    technologies: ["Python", "Flask", "SQLAlchemy", "Bootstrap", "HTML", "CSS"],
+                    imageUrl: "https://media.istockphoto.com/photos/blog-illustration-picture-id480048030?k=6&m=480048030&s=170667a&w=0&h=P-i3fiDpmDBpxWUVDnF0f04VW9bq-yfoBKz--GC8mGU=",
+                    githubUrl: "https://github.com/Tushar9422/BlogVerse",
+                    liveUrl: "https://github.com/Tushar9422/BlogVerse",
+                    createdAt: "2024-08-20"
+                },
+                {
+                    id: 3,
+                    title: "Classifying MNIST Dataset",
+                    description: "This project demonstrates how to build and train a neural network using TensorFlow to recognize handwritten digits from the MNIST dataset ",
+                    technologies: ["Python", "TensorFlow", "Numpy", "Keras"],
+                    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/27/MnistExamples.png",
+                    githubUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
+                    liveUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
+                    createdAt: "2025-07-29"
+                }
+            ];
+            this.saveProjects();
+        }
+
+        // Load user profile
+        const storedProfile = localStorage.getItem('portfolio_profile');
+        if (storedProfile) {
+            this.userProfile = JSON.parse(storedProfile);
+        } else {
+            this.userProfile = {
+                name: "Tushar Sharma",
+                title: "Data Science And Machine Learning Enthusiast",
+                bio: "Passionate data science and machine learning enthusiast skilled in Python and data-driven technologies. Dedicated to solving complex problems and transforming data into insightful, innovative solutions through code.",
+                email: "tusharsharma9422@gmail.com",
+                github: "https://github.com/Tushar9422",
+                linkedin: "https://linkedin.com/in/tushar-squared",
+                photo: "./images/profile.jpg" // Updated path with leading ./
+            };
+            localStorage.setItem('portfolio_profile', JSON.stringify(this.userProfile));
+        }
+
+        // Load skills
+        this.skills = [
+            "Python", "Machine Learning", "PostgreSQL", "TensorFlow", "Scikit-learn", "Pandas", 
+            "Flask", "Statistical modelling", "DSA","REST APIs"
+        ];
+    }
+
+    saveProjects() {
+        localStorage.setItem('portfolio_projects', JSON.stringify(this.projects));
+    }
+
+    saveProfile() {
+        localStorage.setItem('portfolio_profile', JSON.stringify(this.userProfile));
+    }
+
+    // Event Binding
+    bindEvents() {
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', this.handleNavClick.bind(this));
+        });
+
+        // Admin login
+        document.getElementById('adminLoginBtn').addEventListener('click', this.showLoginModal.bind(this));
+        document.getElementById('loginForm').addEventListener('submit', this.handleLogin.bind(this));
+        document.getElementById('closeLogin').addEventListener('click', this.hideLoginModal.bind(this));
+        document.getElementById('logoutBtn').addEventListener('click', this.handleLogout.bind(this));
+
+        // Project management
+        document.getElementById('addProjectBtn').addEventListener('click', () => this.showProjectModal());
+        document.getElementById('projectForm').addEventListener('submit', this.handleProjectSubmit.bind(this));
+        document.getElementById('closeProject').addEventListener('click', this.hideProjectModal.bind(this));
+        document.getElementById('cancelProject').addEventListener('click', this.hideProjectModal.bind(this));
+
+        // Photo upload
+        document.getElementById('uploadPhotoBtn').addEventListener('click', () => {
+            document.getElementById('photoUpload').click();
+        });
+        document.getElementById('photoUpload').addEventListener('change', this.handlePhotoUpload.bind(this));
+
+        // Modal close on outside click
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                this.hideLoginModal();
+            }
+        });
+        document.getElementById('projectModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                this.hideProjectModal();
+            }
+        });
+    }
+
+    // Navigation
+    handleNavClick(e) {
+        e.preventDefault();
+        const targetId = e.target.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+
+    // Authentication
+    checkAuthStatus() {
+        const session = localStorage.getItem('admin_session');
+        if (session) {
+            const sessionData = JSON.parse(session);
+            const now = new Date().getTime();
+            if (sessionData.authenticated && (now - sessionData.timestamp) < 86400000) { // 24 hours
+                this.isLoggedIn = true;
+                this.showAdminFeatures();
+            } else {
+                localStorage.removeItem('admin_session');
+            }
+        }
+    }
+
+    showLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.add('show');
+        document.querySelector('#loginModal .form-control').focus();
+    }
+
+    hideLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.remove('show');
+        document.getElementById('loginForm').reset();
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.classList.add('hidden');
+        errorDiv.textContent = '';
+    }
+
+    async handleLogin(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('loginError');
+
+        try {
+            const res = await fetch('/.netlify/functions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                this.isLoggedIn = true;
+                const sessionData = {
+                    authenticated: true,
+                    timestamp: new Date().getTime()
+                };
+                localStorage.setItem('admin_session', JSON.stringify(sessionData));
+                this.hideLoginModal();
+                this.showAdminFeatures();
+                this.showNotification('Login successful!', 'success');
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            errorDiv.textContent = 'An error occurred. Please try again.';
+            errorDiv.classList.remove('hidden');
+            console.error('Login error:', error);
+        }
+    }
+
+    handleLogout() {
+        this.isLoggedIn = false;
+        localStorage.removeItem('admin_session');
+        this.hideAdminFeatures();
+        this.showNotification('Logged out successfully!', 'info');
+    }
+
+    showAdminFeatures() {
+        document.getElementById('adminLoginBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'inline-flex';
+        document.getElementById('addProjectBtn').style.display = 'inline-flex';
+        document.getElementById('uploadPhotoBtn').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'block';
+        
+        document.querySelectorAll('.project-actions').forEach(actions => {
+            actions.style.display = 'flex';
+        });
+        
+        this.updateProjectCount();
+    }
+
+    hideAdminFeatures() {
+        document.getElementById('adminLoginBtn').style.display = 'inline-flex';
+        document.getElementById('logoutBtn').style.display = 'none';
+        document.getElementById('addProjectBtn').style.display = 'none';
+        document.getElementById('uploadPhotoBtn').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'none';
+        
+        document.querySelectorAll('.project-actions').forEach(actions => {
+            actions.style.display = 'none';
+        });
+    }
+
+    // Data Management
+    loadData() {
+        // Load projects from localStorage or use sample data
+        const storedProjects = localStorage.getItem('portfolio_projects');
+        if (storedProjects) {
+            this.projects = JSON.parse(storedProjects);
+        } else {
+            // Use sample data and save to localStorage
+            this.projects = [
+                {
+                    id: 1,
+                    title: "Image style transfer (using CycleGAN)",
+                    description: "Developed a real-time artistic image style transfer application using CycleGAN, trained on Monet and photo datasets. Implemented custom loss functions and optimized TensorFlow data pipelines for efficient preprocessing and batching. Deployed the model with a user-friendly Streamlit interface, enabling live transformation of images into Monet-style paintings. Skills utilized include machine learning, deep learning, neural networks, and data processing",
+                    technologies: ["Python", "TensorFlow", "Numpy", "Keras", "Streamlit"],
+                    imageUrl: "https://res.cloudinary.com/hz3gmuqw6/image/upload/c_fill,q_60,w_750/v1/classpop/blog/banks-of-the-seine-vetheuil-by-claude-monet_6687e3cb48e2b.jpg",
+                    githubUrl: "https://github.com/Tushar9422/Image-Style-Transfer-CycleGAN-",
+                    liveUrl: "https://github.com/Tushar9422/Image-Style-Transfer-CycleGAN-",
+                    createdAt: "2025-01-15"
+                },
+                {
+                    id: 2,
+                    title: "Blog Verse – secure blog platform",
+                    description: "BlogVerse is an all-in-one blogging platform built with Flask, designed to streamline content creation, user engagement, and content management. It combines modern web development with AI-powered features to enhance the blogging experience.",
+                    technologies: ["Python", "Flask", "SQLAlchemy", "Bootstrap", "HTML", "CSS"],
+                    imageUrl: "https://media.istockphoto.com/photos/blog-illustration-picture-id480048030?k=6&m=480048030&s=170667a&w=0&h=P-i3fiDpmDBpxWUVDnF0f04VW9bq-yfoBKz--GC8mGU=",
+                    githubUrl: "https://github.com/Tushar9422/BlogVerse",
+                    liveUrl: "https://github.com/Tushar9422/BlogVerse",
+                    createdAt: "2024-08-20"
+                },
+                {
+                    id: 3,
+                    title: "Classifying MNIST Dataset",
+                    description: "This project demonstrates how to build and train a neural network using TensorFlow to recognize handwritten digits from the MNIST dataset ",
+                    technologies: ["Python", "TensorFlow", "Numpy", "Keras"],
+                    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/27/MnistExamples.png",
+                    githubUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
+                    liveUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
+                    createdAt: "2025-07-29"
+                }
+            ];
+            this.saveProjects();
+        }
+
+        // Load user profile
+        const storedProfile = localStorage.getItem('portfolio_profile');
+        if (storedProfile) {
+            this.userProfile = JSON.parse(storedProfile);
+        } else {
+            this.userProfile = {
+                name: "Tushar Sharma",
+                title: "Data Science And Machine Learning Enthusiast",
+                bio: "Passionate data science and machine learning enthusiast skilled in Python and data-driven technologies. Dedicated to solving complex problems and transforming data into insightful, innovative solutions through code.",
+                email: "tusharsharma9422@gmail.com",
+                github: "https://github.com/Tushar9422",
+                linkedin: "https://linkedin.com/in/tushar-squared",
+                photo: "./images/profile.jpg" // Updated path with leading ./
+            };
+            localStorage.setItem('portfolio_profile', JSON.stringify(this.userProfile));
+        }
+
+        // Load skills
+        this.skills = [
+            "Python", "Machine Learning", "PostgreSQL", "TensorFlow", "Scikit-learn", "Pandas", 
+            "Flask", "Statistical modelling", "DSA","REST APIs"
+        ];
+    }
+
+    saveProjects() {
+        localStorage.setItem('portfolio_projects', JSON.stringify(this.projects));
+    }
+
+    saveProfile() {
+        localStorage.setItem('portfolio_profile', JSON.stringify(this.userProfile));
+    }
+
+    // Event Binding
+    bindEvents() {
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', this.handleNavClick.bind(this));
+        });
+
+        // Admin login
+        document.getElementById('adminLoginBtn').addEventListener('click', this.showLoginModal.bind(this));
+        document.getElementById('loginForm').addEventListener('submit', this.handleLogin.bind(this));
+        document.getElementById('closeLogin').addEventListener('click', this.hideLoginModal.bind(this));
+        document.getElementById('logoutBtn').addEventListener('click', this.handleLogout.bind(this));
+
+        // Project management
+        document.getElementById('addProjectBtn').addEventListener('click', () => this.showProjectModal());
+        document.getElementById('projectForm').addEventListener('submit', this.handleProjectSubmit.bind(this));
+        document.getElementById('closeProject').addEventListener('click', this.hideProjectModal.bind(this));
+        document.getElementById('cancelProject').addEventListener('click', this.hideProjectModal.bind(this));
+
+        // Photo upload
+        document.getElementById('uploadPhotoBtn').addEventListener('click', () => {
+            document.getElementById('photoUpload').click();
+        });
+        document.getElementById('photoUpload').addEventListener('change', this.handlePhotoUpload.bind(this));
+
+        // Modal close on outside click
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                this.hideLoginModal();
+            }
+        });
+        document.getElementById('projectModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                this.hideProjectModal();
+            }
+        });
+    }
+
+    // Navigation
+    handleNavClick(e) {
+        e.preventDefault();
+        const targetId = e.target.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+
+    // Authentication
+    checkAuthStatus() {
+        const session = localStorage.getItem('admin_session');
+        if (session) {
+            const sessionData = JSON.parse(session);
+            const now = new Date().getTime();
+            if (sessionData.authenticated && (now - sessionData.timestamp) < 86400000) { // 24 hours
+                this.isLoggedIn = true;
+                this.showAdminFeatures();
+            } else {
+                localStorage.removeItem('admin_session');
+            }
+        }
+    }
+
+    showLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.add('show');
+        document.querySelector('#loginModal .form-control').focus();
+    }
+
+    hideLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.remove('show');
+        document.getElementById('loginForm').reset();
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.classList.add('hidden');
+        errorDiv.textContent = '';
+    }
+
+    async handleLogin(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('loginError');
+
+        try {
+            const res = await fetch('/.netlify/functions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                this.isLoggedIn = true;
+                const sessionData = {
+                    authenticated: true,
+                    timestamp: new Date().getTime()
+                };
+                localStorage.setItem('admin_session', JSON.stringify(sessionData));
+                this.hideLoginModal();
+                this.showAdminFeatures();
+                this.showNotification('Login successful!', 'success');
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            errorDiv.textContent = 'An error occurred. Please try again.';
+            errorDiv.classList.remove('hidden');
+            console.error('Login error:', error);
+        }
+    }
+
+    handleLogout() {
+        this.isLoggedIn = false;
+        localStorage.removeItem('admin_session');
+        this.hideAdminFeatures();
+        this.showNotification('Logged out successfully!', 'info');
+    }
+
+    showAdminFeatures() {
+        document.getElementById('adminLoginBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'inline-flex';
+        document.getElementById('addProjectBtn').style.display = 'inline-flex';
+        document.getElementById('uploadPhotoBtn').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'block';
+        
+        document.querySelectorAll('.project-actions').forEach(actions => {
+            actions.style.display = 'flex';
+        });
+        
+        this.updateProjectCount();
+    }
+
+    hideAdminFeatures() {
+        document.getElementById('adminLoginBtn').style.display = 'inline-flex';
+        document.getElementById('logoutBtn').style.display = 'none';
+        document.getElementById('addProjectBtn').style.display = 'none';
+        document.getElementById('uploadPhotoBtn').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'none';
+        
         document.querySelectorAll('.project-actions').forEach(actions => {
             actions.style.display = 'none';
         });
@@ -763,10 +1429,9 @@ document.addEventListener('DOMContentLoaded', function() {
     performanceOptimizer = new PerformanceOptimizer();
     mobileEnhancements = new MobileEnhancements();
     
-    // Initialize mobile menu
     const mobileMenu = new MobileMenu();
     
-    // Add smooth scrolling to all anchor links
+    // Remove the reset button event listener from here since it's now handled in PortfolioApp
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -780,28 +1445,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add loading animations
     setTimeout(() => {
         document.body.classList.add('loaded');
     }, 100);
-    
-    // Add reset button functionality
-    const resetBtn = document.getElementById('resetDataBtn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            PortfolioApp.resetData();
-        });
-    }
-
-    // Add keyboard shortcut for development
-    document.addEventListener('keydown', (e) => {
-        // Press Ctrl + Shift + R to reset data
-        if (e.ctrlKey && e.shiftKey && e.key === 'R') {
-            e.preventDefault();
-            PortfolioApp.resetData();
-        }
-    });
 });
 
 // Global error handling
