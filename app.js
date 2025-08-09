@@ -102,7 +102,7 @@ class PortfolioApp {
                 email: "tusharsharma9422@gmail.com",
                 github: "https://github.com/Tushar9422",
                 linkedin: "https://linkedin.com/in/tushar-squared",
-                photo: "images/profile.jpg" // Default profile image
+                photo: "./images/profile.jpg" // Updated path with leading ./
             };
             localStorage.setItem('portfolio_profile', JSON.stringify(this.userProfile));
         }
