@@ -1461,17 +1461,48 @@ body {
   gap: var(--space-16);
 }
 
+.contact-link {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all var(--duration-normal) var(--ease-standard);
+    position: relative;
+}
+
+.contact-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--color-primary);
+    transition: width var(--duration-normal) var(--ease-standard);
+}
+
+.contact-link:hover {
+    color: var(--color-primary);
+}
+
+.contact-link:hover::after {
+    width: 100%;
+}
+
 .contact-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-12);
-  font-size: var(--font-size-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-12);
+    font-size: var(--font-size-lg);
 }
 
 .contact-item i {
-  color: var(--color-primary);
-  width: 24px;
+    color: var(--color-primary);
+    width: 24px;
+    transition: transform var(--duration-normal) var(--ease-standard);
+}
+
+.contact-item:hover i {
+    transform: scale(1.2);
 }
 
 /* Modal Styles - Fixed */
