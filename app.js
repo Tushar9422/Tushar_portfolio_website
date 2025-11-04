@@ -1,34 +1,25 @@
-const APP_VERSION = '1.0.1'; // Update this when making significant changes
+const APP_VERSION = '1.0.0'; // Update this when making significant changes
 
 // Storage reset utility
 const StorageManager = {
     resetStorage() {
         try {
             localStorage.clear();
+            // Set version after clearing to prevent infinite reload loop
             localStorage.setItem('app_version', APP_VERSION);
-            // Don't reload immediately after reset to avoid infinite loop
-            return true;
+            window.location.reload();
         } catch (error) {
             console.error('Error resetting storage:', error);
-            return false;
+            alert('Failed to reset data. Please try again.');
         }
     },
     
     checkVersion() {
         const storedVersion = localStorage.getItem('app_version');
-        // Reset if version doesn't match or if it's the first visit (no version stored)
-        if (!storedVersion || storedVersion !== APP_VERSION) {
-            console.log('New version detected or first visit, resetting to default state...');
-            if (this.resetStorage()) {
-                // Only show notification if it's not the first visit
-                if (storedVersion) {
-                    setTimeout(() => {
-                        if (window.app) {
-                            window.app.showNotification('Portfolio has been updated to the latest version!', 'info');
-                        }
-                    }, 1000);
-                }
-            }
+        if (storedVersion !== APP_VERSION) {
+            console.log('App version changed, resetting storage...');
+            this.resetStorage();
+            localStorage.setItem('app_version', APP_VERSION);
         }
     }
 };
