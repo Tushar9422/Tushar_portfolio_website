@@ -276,6 +276,16 @@ class PortfolioApp {
             this.projects = [
                 {
                     id: 1,
+                    title: "Multimodal AI Mental Health Assistant (In Progress...)",
+                    description: "Built an AI-based system that analyzes voice tone, facial expressions, and text sentiment to assess mental health indicators. (Currently in Progress...",
+                    technologies: ["Python", "TensorFlow", "MediaPipe", "Keras", "Streamlit", "Librosa", "Pandas"],
+                    imageUrl: "https://as2.ftcdn.net/jpg/08/47/25/53/1000_F_847255336_gCKmHs17GK5Wtje5HKHqLhiKCnpkkzhS.jpg",
+                    githubUrl: "https://github.com/Tushar9422/Multimodal_mental_health_ai",
+                    liveUrl: "https://github.com/Tushar9422/Multimodal_mental_health_ai",
+                    createdAt: "2025-07-15"
+                },
+                {
+                    id: 2,
                     title: "Image style transfer (using CycleGAN)",
                     description: "Developed a real-time artistic image style transfer application using CycleGAN, trained on Monet and photo datasets. Implemented custom loss functions and optimized TensorFlow data pipelines for efficient preprocessing and batching. Deployed the model with a user-friendly Streamlit interface, enabling live transformation of images into Monet-style paintings. Skills utilized include machine learning, deep learning, neural networks, and data processing",
                     technologies: ["Python", "TensorFlow", "Numpy", "Keras", "Streamlit"],
@@ -285,7 +295,7 @@ class PortfolioApp {
                     createdAt: "2025-01-15"
                 },
                 {
-                    id: 2,
+                    id: 3,
                     title: "Blog Verse – secure blog platform",
                     description: "BlogVerse is an all-in-one blogging platform built with Flask, designed to streamline content creation, user engagement, and content management. It combines modern web development with AI-powered features to enhance the blogging experience.",
                     technologies: ["Python", "Flask", "SQLAlchemy", "Bootstrap", "HTML", "CSS"],
@@ -295,13 +305,23 @@ class PortfolioApp {
                     createdAt: "2024-08-20"
                 },
                 {
-                    id: 3,
-                    title: "Classifying MNIST Dataset",
-                    description: "This project demonstrates how to build and train a neural network using TensorFlow to recognize handwritten digits from the MNIST dataset ",
-                    technologies: ["Python", "TensorFlow", "Numpy", "Keras"],
-                    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/27/MnistExamples.png",
-                    githubUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
-                    liveUrl: "https://github.com/Tushar9422/Classifying_MNIST_dataset",
+                    id: 4,
+                    title: "SentimentScope",
+                    description: "This project applies machine learning to classify text into positive, negative, or neutral sentiments. It features data preprocessing, model training, and evaluation, with results saved in a JSON file and predictions exported to CSV. The model achieves an accuracy of 89%, offering reliable sentiment insights for text data.",
+                    technologies: ["Python", "Prompt Engineering", "Numpy", "Pandas", "Scikit-learn"],
+                    imageUrl: "https://cdn-thumbnails.huggingface.co/social-thumbnails/spaces/0farah0/SentimentScope.png",
+                    githubUrl: "https://github.com/Tushar9422/SentimentScope",
+                    liveUrl: "https://github.com/Tushar9422/SentimentScope",
+                    createdAt: "2025-07-29"
+                },
+                {
+                    id: 5,
+                    title: "Trader Behaviour Analysis",
+                    description: "A comprehensive data science project analyzing the relationship between Bitcoin market sentiment and trader performance using real market data. This analysis uncovers hidden patterns in trading behavior and provides actionable insights for smarter trading strategies. 92% accuracy signals identified for extreme greed periods",
+                    technologies: ["Python", "Seaborn", "Numpy", "Pandas", "Scikit-learn"],
+                    imageUrl: "https://img.freepik.com/premium-photo/stock-trader-flat_1279508-6788.jpg",
+                    githubUrl: "https://github.com/Tushar9422/trader-behaviour-analysis",
+                    liveUrl: "https://github.com/Tushar9422/trader-behaviour-analysis",
                     createdAt: "2025-07-29"
                 }
             ];
