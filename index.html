@@ -3,285 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tushar's Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <title>Tushar Sharma | Data Science, Machine Learning & Software Engineering</title>
+    <meta name="description" content="Portfolio of Tushar Sharma, a data science, machine learning, and software engineering student building practical Python, ML, and web projects.">
+    <link rel="canonical" href="https://tusharportsquard.netlify.app/">
+    <meta name="theme-color" content="#101820">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Tushar Sharma | Portfolio">
+    <meta property="og:description" content="Data science, machine learning, and software engineering portfolio featuring Python, ML, analytics, and web projects.">
+    <meta property="og:url" content="https://tusharportsquard.netlify.app/">
+    <meta property="og:image" content="https://tusharportsquard.netlify.app/assets/images/profile.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tushar Sharma | Portfolio">
+    <meta name="twitter:description" content="Practical data science, machine learning, and software engineering projects.">
+    <meta name="twitter:image" content="https://tusharportsquard.netlify.app/assets/images/profile.jpg">
+    <link rel="icon" href="/assets/favicon/icons8-portfolio-64.png" type="image/png">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = savedTheme || (systemDark ? 'dark' : 'light');
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Tushar Sharma",
+            "url": "https://tusharportsquard.netlify.app/",
+            "email": "mailto:tusharsharma9422@gmail.com",
+            "sameAs": [
+                "https://github.com/Tushar9422",
+                "https://linkedin.com/in/tushar-squared"
+            ],
+            "knowsAbout": ["Data Science", "Machine Learning", "Python", "Software Engineering"]
+        }
+    </script>
 </head>
 <body>
-    <section class="blob-bg">
-    <!-- Floating Geometric Shapes -->
-    <div class="floating-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
-        <div class="shape shape-5"></div>
-    </div>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <h2>Portfolio</h2>
-            </div>
-            <button class="mobile-menu-btn" aria-label="Toggle menu">
+    <header class="site-header">
+        <nav class="nav container" aria-label="Primary navigation">
+            <a class="nav__brand" href="#home" aria-label="Tushar Sharma home">TS</a>
+            <button class="nav__toggle" type="button" aria-label="Open navigation menu" aria-controls="navMenu" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <div class="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="#projects" class="nav-link">Projects</a>
-                <a href="#skills" class="nav-link">Skills</a>
-                <a href="#contact" class="nav-link">Contact</a>
-                <button id="themeToggleBtn" class="theme-toggle" aria-label="Toggle theme">
-                    <i class="fas fa-sun"></i>
-                </button>
-                <button id="adminLoginBtn" class="btn btn--primary">Admin</button>
-                <button id="logoutBtn" class="btn btn--secondary hidden">Logout</button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    
-    <section id="home" class="hero">
-        <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        </div>
-        
-        <!-- Add this new bubbles container -->
-        <div class="floating-bubbles">
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-        </div>
-
-        <div class="hero-background"></div>
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1 class="hero-title fade-in">
-                        <span id="userName">Tushar Sharma</span>
-                    </h1>
-                    <p class="hero-subtitle fade-in">
-                        <span id="userTitle"></span>
-                    </p>
-                    <p class="hero-description fade-in" id="userBio">
-                        Passionate data science and machine learning enthusiast skilled in Python and data-driven technologies. Dedicated to solving complex problems and transforming data into insightful, innovative solutions through code.
-                    </p>
-                    <div class="hero-quick-skills fade-in">
-                        <div class="quick-skill"><i class="fab fa-python"></i> Python</div>
-                        <div class="quick-skill"><i class="fab fa-database"></i> PostgreSQL</div>
-                        <div class="quick-skill"><i class="fas fa-brain"></i> ML/AI</div>
-                        <div class="quick-skill">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19.6 12l.1 4.7-3.1-1.8v6.7L12.5 24V0l10.2 5.9v5.3l-6.1-3.6v2.7zM1.3 5.9L11.5 0v24l-4.1-2.4v-14l-6.1 3.6z"/>
-                            </svg>
-                            TensorFlow
-                        </div>
-
-
-                    </div>
-                    <div class="hero-buttons fade-in">
-                        <a href="#projects" class="btn btn--primary">View Projects</a>
-                        <a href="#contact" class="btn btn--outline">Get In Touch</a>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <div class="profile-image-container">
-                        <img id="profileImage" src="images/profile.jpg" alt="Profile" class="profile-image">
-                        <button id="uploadPhotoBtn" class="upload-photo-btn hidden">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                        <input type="file" id="photoUpload" accept="image/*" class="hidden">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="floating-icons">
-            <i class="floating-icon fab fa-python"></i>
-            <i class="floating-icon fab fa-github"></i>
-            <i class="floating-icon fas fa-database"></i>
-            <i class="floating-icon fas fa-robot"></i>
-            <i class="floating-icon fas fa-code"></i>
-            <i class="floating-icon fas fa-code-branch"></i>
-            <i class="floating-icon fas fa-laptop-code"></i>
-            <i class="floating-icon fas fa-lightbulb"></i>
-            
-        </div>
-    </section>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>I am a passionate data science and machine learning enthusiast proficient in Python, SQL, and algorithm design. I have successfully developed and deployed projects that highlight my problem-solving skills and strong foundation in statistics. With a focus on creating innovative, data-driven solutions, I am eager to contribute and grow in a collaborative environment through internship or entry-level opportunities.</p>
-                    <div class="social-links">
-                        <a href="https://github.com/Tushar9422" id="githubLink" target="_blank"><i class="fab fa-github"></i></a>
-                        <a href="https://linkedin.com/in/tushar-squared" id="linkedinLink" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="tusharsharma9422@gmail.com" id="emailLink"><i class="fas fa-envelope"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="section-title">Skills & Technologies</h2>
-            <div class="skills-grid" id="skillsGrid">
-                <!-- Skills will be populated by JavaScript -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <div class="projects-header">
-                <h2 class="section-title">Featured Projects</h2>
-                <button id="addProjectBtn" class="btn btn--primary hidden">Add Project</button>
-            </div>
-            <div class="projects-grid" id="projectsGrid">
-                <!-- Projects will be populated by JavaScript -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="contact-content">
-                <p>Let's collaborate on your next project!</p>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <a href="mailto:tusharsharma9422@gmail.com" id="contactEmail" class="contact-link">
-                            tusharsharma9422@gmail.com
-                        </a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fab fa-github"></i>
-                        <a href="https://github.com/Tushar9422" target="_blank" class="contact-link">
-                            github.com/Tushar9422
-                        </a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fab fa-linkedin"></i>
-                        <a href="https://linkedin.com/in/tushar-squared" target="_blank" class="contact-link">
-                            linkedin.com/in/tushar-squared
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Admin Login Modal -->
-    <div id="loginModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close" id="closeLogin">&times;</span>
-            <h2>Admin Login</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn--primary btn--full-width">Login</button>
-            </form>
-            <div id="loginError" class="error-message hidden"></div>
-        </div>
-    </div>
-
-    <!-- Project Modal -->
-    <div id="projectModal" class="modal hidden">
-        <div class="modal-content modal-large">
-            <span class="close" id="closeProject">&times;</span>
-            <h2 id="projectModalTitle">Add Project</h2>
-            <form id="projectForm">
-                <div class="form-group">
-                    <label for="projectTitle" class="form-label">Project Title</label>
-                    <input type="text" id="projectTitle" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="projectDescription" class="form-label">Description</label>
-                    <textarea id="projectDescription" class="form-control" rows="4" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="projectTechnologies" class="form-label">Technologies (comma-separated)</label>
-                    <input type="text" id="projectTechnologies" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="projectImage" class="form-label">Project Image URL</label>
-                    <input type="url" id="projectImage" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="projectGithub" class="form-label">GitHub URL</label>
-                    <input type="url" id="projectGithub" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="projectLive" class="form-label">Live Demo URL</label>
-                    <input type="url" id="projectLive" class="form-control">
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn--primary">Save Project</button>
-                    <button type="button" id="cancelProject" class="btn btn--outline">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="admin-panel hidden">
-        <div class="admin-header">
-            <h2>Admin Dashboard</h2>
-            <div class="admin-stats">
-                <div class="stat-card">
-                    <h3 id="projectCount">0</h3>
-                    <p>Projects</p>
-                </div>
-                <button id="resetDataBtn" class="btn btn--secondary">
-                    Reset Data
+            <div class="nav__menu" id="navMenu">
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+                <a href="#education">Education</a>
+                <a href="#contact">Contact</a>
+                <button class="theme-toggle" type="button" aria-label="Toggle color theme" data-theme-toggle>
+                    <span aria-hidden="true">◐</span>
                 </button>
             </div>
-        </div>
-    </div>
+        </nav>
+    </header>
 
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" class="loading-spinner hidden">
-        <div class="spinner"></div>
-    </div>
-    </section>
-    <script src="app.js"></script>
+    <main id="main">
+        <section class="hero section" id="home">
+            <div class="container hero__grid">
+                <div class="hero__content">
+                    <p class="eyebrow">Portfolio</p>
+                    <h1 id="profileName">Tushar Sharma</h1>
+                    <p class="hero__headline" id="profileHeadline">Data Science, Machine Learning & Software Engineering</p>
+                    <p class="hero__summary" id="profileSummary"></p>
+                    <div class="hero__actions" id="heroActions"></div>
+                    <div class="hero__links" id="heroLinks" aria-label="Social links"></div>
+                </div>
+                <aside class="profile-panel" aria-label="Profile summary">
+                    <img src="/assets/images/profile.jpg" alt="Tushar Sharma" width="520" height="520" class="profile-panel__image" id="profileImage">
+                    <div class="profile-panel__meta" id="profileMeta"></div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section" id="about" aria-labelledby="aboutTitle">
+            <div class="container split-section">
+                <div>
+                    <p class="eyebrow">About</p>
+                    <h2 id="aboutTitle">Building practical systems with data and code.</h2>
+                </div>
+                <div class="prose" id="aboutContent"></div>
+            </div>
+        </section>
+
+        <section class="section section--muted" id="experience" aria-labelledby="experienceTitle">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="eyebrow">Experience</p>
+                    <h2 id="experienceTitle">Experience & Focus</h2>
+                </div>
+                <div class="timeline" id="experienceList"></div>
+            </div>
+        </section>
+
+        <section class="section" id="skills" aria-labelledby="skillsTitle">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="eyebrow">Skills</p>
+                    <h2 id="skillsTitle">Technical Toolkit</h2>
+                </div>
+                <div class="skills-grid" id="skillsGrid"></div>
+            </div>
+        </section>
+
+        <section class="section section--muted" id="projects" aria-labelledby="projectsTitle">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="eyebrow">Projects</p>
+                    <h2 id="projectsTitle">Selected Work</h2>
+                </div>
+                <div class="projects-grid" id="projectsGrid"></div>
+            </div>
+        </section>
+
+        <section class="section" id="education" aria-labelledby="educationTitle">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="eyebrow">Education</p>
+                    <h2 id="educationTitle">Education & Certifications</h2>
+                </div>
+                <div class="info-grid" id="educationGrid"></div>
+            </div>
+        </section>
+
+        <section class="section contact" id="contact" aria-labelledby="contactTitle">
+            <div class="container contact__grid">
+                <div>
+                    <p class="eyebrow">Contact</p>
+                    <h2 id="contactTitle">Open to internships, entry-level roles, and project collaboration.</h2>
+                </div>
+                <div class="contact-card">
+                    <p>Reach out for data science, machine learning, or software engineering opportunities.</p>
+                    <div class="contact-links" id="contactLinks"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__content">
+            <p>© <span id="year"></span> Tushar Sharma. Built with HTML, CSS & JavaScript.</p>
+            <div id="footerLinks"></div>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/app.js"></script>
 </body>
 </html>
